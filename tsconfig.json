@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    /* Base */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "module": "NodeNext",
+    "target": "ES6",
+  }
+}
