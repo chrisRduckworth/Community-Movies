@@ -1,8 +1,4 @@
-interface Booking {
-  screening_id: number,
-  email: string,
-  charge: number,
-}
+import { Booking } from "../interfaces.js"
 
 const bookings: Booking[] = [
   { screening_id: 12, email: 'john.doe@example.com', charge: 1800 },
