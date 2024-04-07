@@ -1,5 +1,5 @@
 export interface Screening {
-  "date": number,
+  "date": string,
   "location": string,
   "cost": number,
   "is_pay_what_you_want": boolean,
