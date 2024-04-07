@@ -1,2 +1,2 @@
-exports.screeningData = require("./screenings.ts")
-exports.bookingData = require("./bookings.ts")
+exports.screeningData = require("./screenings")
+exports.bookingData = require("./bookings")
