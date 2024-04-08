@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx tsc && cp ./.env.test ./build/.env.test && jest",
     "setup-dbs": "psql -f ./db/setup.sql",
-    "seed": "node ./build/db/seeds/run-seed.js"
+    "seed": "node ./build/db/seeds/run-seed.js",
+    "start": "cp ./.env.development ./build/.env.test && node ./build/listen.js"
   },
   "author": "",
   "license": "ISC",
