@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx tsc && cp ./.env.test ./build/.env.test && jest",
+    "test": "npx tsc && cp ./.env.test ./build/.env.test && cp ./endpoints.json ./build/endpoints.json && jest",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./build/db/seeds/run-seed.js",
     "start": "cp ./.env.development ./build/.env.test && node ./build/listen.js"
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
     "supertest": "^6.3.4",
