@@ -1,0 +1,15 @@
+{
+  "GET /api": {
+    "description": "serves up a json representation of all available endpoints of the api",
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": {
+      "GET /api/bananas": {
+        "description": "finds bananas",
+        "queries": [],
+        "format": "array",
+        "exampleResponse": "let's not do this recursively"
+      }
+    }
+  }
+}
