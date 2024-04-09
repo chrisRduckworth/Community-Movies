@@ -1,6 +1,6 @@
-import { Screening } from "../interfaces.js"
+import { ScreeningSeed } from "../interfaces.js"
 
-const screenings: Screening[] = [
+const screenings: ScreeningSeed[] = [
   {
     "date": "2024-04-30T13:00:00+01:00",
     "location": "123 Waterloo Road, London, L1 4HK",

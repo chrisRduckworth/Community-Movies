@@ -1,6 +1,6 @@
-import { Booking } from "../interfaces.js"
+import { BookingSeed } from "../interfaces.js"
 
-const bookings: Booking[] = [
+const bookings: BookingSeed[] = [
   { screening_id: 12, email: 'john.doe@example.com', charge: 1800 },
   { screening_id: 7, email: 'alice.smith@example.com', charge: 500 },
   { screening_id: 7, email: 'robert.johnson@example.com', charge: 500 },

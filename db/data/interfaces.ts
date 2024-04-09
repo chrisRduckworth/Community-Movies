@@ -1,4 +1,4 @@
-export interface Screening {
+export interface ScreeningSeed {
   "date": string,
   "location": string,
   "cost": number,
@@ -12,7 +12,7 @@ export interface Screening {
   "description"?: string
 }
 
-export interface Booking {
+export interface BookingSeed {
   screening_id: number,
   email: string,
   charge: number,

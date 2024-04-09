@@ -1,6 +1,6 @@
-import { Screening } from "../interfaces"
+import { ScreeningSeed } from "../interfaces"
 
-const screenings: Screening[] = [
+const screenings: ScreeningSeed[] = [
   {
     "date": "2024-04-08T13:00:00+01:00",
     "location": "St Anne's Community Centre, Hardwick Square West, Buxton, Derbyshire, SK17 6PX",

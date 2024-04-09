@@ -1,9 +1,9 @@
 const db = require("../connection")
 const format = require("pg-format")
 
-import { Screening, Booking } from "../data/interfaces"
+import { ScreeningSeed, BookingSeed } from "../data/interfaces"
 
-const seed = async ({ screeningData, bookingData }: { screeningData: Screening[]; bookingData: Booking[] }) => {
+const seed = async ({ screeningData, bookingData }: { screeningData: ScreeningSeed[]; bookingData: BookingSeed[] }) => {
 
   // drop tables
   await db.query("DROP TABLE IF EXISTS bookings;")
