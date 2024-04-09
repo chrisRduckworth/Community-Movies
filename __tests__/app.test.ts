@@ -47,7 +47,7 @@ describe("GET /api", () => {
   });
 });
 
-describe.only("GET /api/screenings", () => {
+describe("GET /api/screenings", () => {
   it("should return a list of screening objects", async () => {
     const {
       body: { screenings },

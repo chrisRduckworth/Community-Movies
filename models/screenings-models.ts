@@ -12,7 +12,8 @@ exports.fetchScreenings = async () => {
     date,
     cost,
     is_pay_what_you_want
-  FROM screenings`);
+  FROM screenings
+  ORDER BY date ASC;`);
   const screenings: ScreeningOverview[] = rows.map((screening: any) => {
     const {
       title,
