@@ -13,6 +13,7 @@ exports.fetchScreenings = async () => {
     cost,
     is_pay_what_you_want
   FROM screenings
+  WHERE date >= CURRENT_TIMESTAMP
   ORDER BY date ASC;`);
   const screenings: ScreeningOverview[] = rows.map((screening: any) => {
     const {
