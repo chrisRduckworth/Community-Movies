@@ -7,6 +7,8 @@ const app = require("../app")
 beforeEach(() => seed(testData));
 afterAll(() => db.end())
 
+
+
 describe("GET /api", () => {
 
   it("should responds with a JSON object, each key is a valid path", async () => {
@@ -39,7 +41,8 @@ describe("GET /api", () => {
       .expect(200)
 
     const controllers = [
-      "api"
+      "api",
+      "screenings"
     ]
 
     const controllerFunctions = controllers.map((str) => 
@@ -53,4 +56,44 @@ describe("GET /api", () => {
 
     expect(Object.keys(body)).toHaveLength(numOfEndpoints)
   })
+
+})
+
+
+
+describe("GET /api/screenings", () => {
+
+  it.only("should return a list of screening objects", async () => {
+    const { body: { screenings } } = await request(app) 
+      .get("/api/screenings")
+      .expect(200)
+
+    expect(screenings.length).toBeGreaterThan(0)
+
+    screenings.forEach((screening: any) => {
+
+      // screening properties
+      expect(Object.keys(screening)).toHaveLength(5)
+      expect(screening).toHaveProperty("film")
+      expect(screening).toHaveProperty("location")
+      expect(screening).toHaveProperty("date")
+      expect(screening).toHaveProperty("cost")
+      expect(screening).toHaveProperty("is_pay_what_you_want")
+
+      // film properties
+      expect(Object.keys(screening.film)).toHaveLength(3)
+      expect(screening.film).toHaveProperty("title")
+      expect(screening.film).toHaveProperty("year")
+      expect(screening.film).toHaveProperty("poster_url")
+    })
+  })
+
+  it("should return the screenings sorted by date ascending", async () => {
+
+  })
+
+  it("should return only screenings from the current date onwards", async () => {
+
+  })
+
 })
