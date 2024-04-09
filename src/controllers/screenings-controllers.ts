@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-const { fetchScreenings } = require("../models/screenings-models");
+const { fetchScreenings, fetchScreeningDetails } = require("../models/screenings-models");
 
 const getScreenings: RequestHandler = async (req, res, next) => {
   try {
@@ -10,4 +10,10 @@ const getScreenings: RequestHandler = async (req, res, next) => {
   }
 };
 
-module.exports = { getScreenings };
+const getScreeningDetails: RequestHandler = async (req, res, next) => {
+  const { screening_id }  = req.params
+  const screening = await fetchScreeningDetails(screening_id)
+  res.status(200).send({ screening })
+}
+
+module.exports = { getScreenings, getScreeningDetails };
