@@ -1,3 +1,5 @@
+import { ScreeningDetail } from "../interfaces";
+
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
@@ -108,4 +110,34 @@ describe("GET /api/screenings", () => {
       expect(now.isBefore(dayjs(date))).toBe(true);
     });
   });
+});
+
+describe.only("GET /api/screenings/:screening_id", () => {
+  it("should return the correct information", async () => {
+    const expectedInfo: ScreeningDetail = {
+      date: "2024-04-03T12:00:00.000Z",
+      location: "123 Waterloo Road, London, L1 4HK",
+      cost: 0,
+      is_pay_what_you_want: true,
+      film: {
+        title: "Good Will Hunting",
+        year: 1997,
+        backdrop_url:
+          "https://media.themoviedb.org/t/p/w533_and_h300_bestv2/4ywKTlsIllvQYRiZJPwYACJIHY8.jpg",
+        logo_url:
+          "https://image.tmdb.org/t/p/original/357AN6S2UIfoJrt4DKPMDwwhWe2.png",
+        description:
+          "When professors discover that an aimless janitor is also a math genius, a therapist helps the young man confront the demons that are holding him back.",
+      },
+    };
+
+    const { body: { screening } } = await request(app)
+      .get("/api/screenings/1")
+      .expect(200);
+
+    expect(screening).toEqual(expectedInfo)
+  });
+  it("should return different information for different id", async () => {});
+  it("should return 404 if no screening is found with the id", async () => {});
+  it("should return 400 if sent incorrect data type for id", async () => {});
 });
