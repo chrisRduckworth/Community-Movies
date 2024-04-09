@@ -14,9 +14,13 @@ const getScreenings: RequestHandler = async (req, res, next) => {
 };
 
 const getScreeningDetails: RequestHandler = async (req, res, next) => {
-  const { screening_id } = req.params;
-  const screening = await fetchScreeningDetails(screening_id);
-  res.status(200).send({ screening });
+  try {
+    const { screening_id } = req.params;
+    const screening = await fetchScreeningDetails(screening_id);
+    res.status(200).send({ screening });
+  } catch (e) {
+    next(e);
+  }
 };
 
 module.exports = { getScreenings, getScreeningDetails };

@@ -61,6 +61,13 @@ exports.fetchScreeningDetails = async (
     [screening_id]
   );
 
+  if (rows.length === 0) {
+    throw {
+      status: 404,
+      msg: "Screening not found",
+    };
+  }
+
   const {
     title,
     year,
