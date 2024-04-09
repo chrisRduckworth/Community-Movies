@@ -140,13 +140,19 @@ describe.only("GET /api/screenings/:screening_id", () => {
   it("should return different information for different id", async () => {
     const {
       body: { screening: screening1 },
-    } = await request(app).get("/api/screenings/1");
+    } = await request(app).get("/api/screenings/1").expect(200);
     const {
       body: { screening: screening2 },
-    } = await request(app).get("/api/screenings/2");
+    } = await request(app).get("/api/screenings/2").expect(200);
 
     expect(screening1).not.toEqual(screening2);
   });
-  it("should return 404 if no screening is found with the id", async () => {});
+  it.only("should return 404 if no screening is found with the id", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/screenings/10000").expect(404);
+
+    expect(msg).toBe("Screening not found");
+  });
   it("should return 400 if sent incorrect data type for id", async () => {});
 });
