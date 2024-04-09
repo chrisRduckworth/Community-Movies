@@ -1,5 +1,6 @@
 import { ScreeningOverview } from "../interfaces";
 const db = require("../db/connection");
+const dayjs = require("dayjs");
 
 exports.fetchScreenings = async () => {
   const { rows }: any = await db.query(`
@@ -29,7 +30,7 @@ exports.fetchScreenings = async () => {
         poster_url,
       },
       location,
-      date,
+      date: dayjs(date).format(),
       cost,
       is_pay_what_you_want,
     };
