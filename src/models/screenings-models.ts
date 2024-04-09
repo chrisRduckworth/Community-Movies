@@ -40,8 +40,11 @@ exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   return screenings;
 };
 
-exports.fetchScreeningDetails = async (screening_id: string): Promise<ScreeningDetail> => {
-  const { rows } = await db.query(`
+exports.fetchScreeningDetails = async (
+  screening_id: string
+): Promise<ScreeningDetail> => {
+  const { rows } = await db.query(
+    `
     SELECT 
       date,
       location,
@@ -54,8 +57,9 @@ exports.fetchScreeningDetails = async (screening_id: string): Promise<ScreeningD
       description
     FROM screenings
     WHERE screening_id = $1;
-    `, [screening_id]
-  )
+    `,
+    [screening_id]
+  );
 
   const {
     title,
@@ -66,8 +70,8 @@ exports.fetchScreeningDetails = async (screening_id: string): Promise<ScreeningD
     date,
     location,
     cost,
-    is_pay_what_you_want
-  } = rows[0]
+    is_pay_what_you_want,
+  } = rows[0];
 
   const screening = {
     film: {
@@ -75,13 +79,13 @@ exports.fetchScreeningDetails = async (screening_id: string): Promise<ScreeningD
       year,
       backdrop_url,
       logo_url,
-      description
+      description,
     },
     date,
     location,
     cost,
-    is_pay_what_you_want
-  }
+    is_pay_what_you_want,
+  };
 
-  return screening
-}
+  return screening;
+};
