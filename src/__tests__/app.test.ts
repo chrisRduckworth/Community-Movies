@@ -137,7 +137,14 @@ describe.only("GET /api/screenings/:screening_id", () => {
 
     expect(screening).toEqual(expectedInfo)
   });
-  it("should return different information for different id", async () => {});
+  it("should return different information for different id", async () => {
+    const { body: { screening: screening1}} = await request(app)
+      .get("/api/screenings/1")
+    const { body: { screening: screening2}} = await request(app)
+      .get("/api/screenings/2")
+
+    expect(screening1).not.toEqual(screening2)
+  });
   it("should return 404 if no screening is found with the id", async () => {});
   it("should return 400 if sent incorrect data type for id", async () => {});
 });
