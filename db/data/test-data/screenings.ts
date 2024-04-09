@@ -2,7 +2,7 @@ import { ScreeningSeed } from "../interfaces.js";
 
 const screenings: ScreeningSeed[] = [
   {
-    date: "2024-04-30T13:00:00+01:00",
+    date: "2024-04-03T13:00:00+01:00",
     location: "123 Waterloo Road, London, L1 4HK",
     cost: 0,
     is_pay_what_you_want: true,

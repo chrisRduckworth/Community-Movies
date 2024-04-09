@@ -88,11 +88,21 @@ describe("GET /api/screenings", () => {
     } = await request(app).get("/api/screenings").expect(200);
 
     const sortingFunction = (a: any, b: any): number => {
-      return dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1
-    }
+      return dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1;
+    };
 
-    expect(screenings).toEqual(screenings.toSorted(sortingFunction))
+    expect(screenings).toEqual(screenings.toSorted(sortingFunction));
   });
 
-  it("should return only screenings from the current date onwards", async () => {});
+  it("should return only screenings from the current date onwards", async () => {
+    const now = dayjs();
+
+    const {
+      body: { screenings },
+    } = await request(app).get("/api/screenings").expect(200);
+
+    screenings.forEach(({ date }: { date: string }) => {
+      expect(now.isBefore(dayjs(date))).toBe(true);
+    });
+  });
 });
