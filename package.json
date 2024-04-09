@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx tsc && cp ./.env.test ./build/.env.test && cp ./endpoints.json ./build/endpoints.json && jest",
-    "setup-dbs": "psql -f ./db/setup.sql",
+    "test": "npx tsc && jest",
+    "setup-dbs": "psql -f ./src/db/setup.sql",
     "seed": "node ./build/db/seeds/run-seed.js",
-    "start": "cp ./.env.development ./build/.env.test && node ./build/listen.js"
+    "start": "node ./build/listen.js"
   },
   "author": "",
   "license": "ISC",
