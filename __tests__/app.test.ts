@@ -82,7 +82,17 @@ describe.only("GET /api/screenings", () => {
     });
   });
 
-  it("should return the screenings sorted by date ascending", async () => {});
+  it("should return the screenings sorted by date ascending", async () => {
+    const {
+      body: { screenings },
+    } = await request(app).get("/api/screenings").expect(200);
+
+    const sortingFunction = (a: any, b: any): number => {
+      return dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1
+    }
+
+    expect(screenings).toEqual(screenings.toSorted(sortingFunction))
+  });
 
   it("should return only screenings from the current date onwards", async () => {});
 });
