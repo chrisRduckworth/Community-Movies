@@ -11,5 +11,25 @@
         "exampleResponse": "let's not do this recursively"
       }
     }
+  },
+  "GET /api/screenings": {
+    "description": "returns a list of screenings",
+    "queries": [],
+    "format": "array of JSON objects",
+    "exampleResponse": {
+      "screenings": [
+        {
+          "film": {
+            "title": "Good Will Hunting",
+            "year": 1997,
+            "poster_url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bABCBKYBK7A5G1x0FzoeoNfuj2.jpg"
+          },
+          "location": "123 Waterloo Road, London, AB1 2CD",
+          "date": "2024-04-09 12:00:00+01",
+          "cost": 0,
+          "is_pay_what_you_want": true
+        }
+      ]
+    }
   }
 }

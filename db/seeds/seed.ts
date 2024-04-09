@@ -1,13 +1,18 @@
-const db = require("../connection")
-const format = require("pg-format")
+const db = require("../connection");
+const format = require("pg-format");
 
-import { Screening, Booking } from "../data/interfaces"
+import { ScreeningSeed, BookingSeed } from "../../interfaces";
 
-const seed = async ({ screeningData, bookingData }: { screeningData: Screening[]; bookingData: Booking[] }) => {
-
+const seed = async ({
+  screeningData,
+  bookingData,
+}: {
+  screeningData: ScreeningSeed[];
+  bookingData: BookingSeed[];
+}) => {
   // drop tables
-  await db.query("DROP TABLE IF EXISTS bookings;")
-  await db.query("DROP TABLE IF EXISTS screenings;")
+  await db.query("DROP TABLE IF EXISTS bookings;");
+  await db.query("DROP TABLE IF EXISTS screenings;");
 
   // create tables
   await db.query(`CREATE TABLE screenings (
@@ -23,14 +28,14 @@ const seed = async ({ screeningData, bookingData }: { screeningData: Screening[]
     backdrop_url VARCHAR,
     logo_url VARCHAR,
     description VARCHAR
-  );`)
+  );`);
 
   await db.query(`CREATE TABLE bookings (
     booking_id SERIAL PRIMARY KEY,
     screening_id INT REFERENCES screenings(screening_id) NOT NULL,
     email VARCHAR(255) NOT NULL,
     charge INT NOT NULL
-  );`)
+  );`);
 
   // insert screenings
   const insertScreeningsStr = format(
@@ -43,17 +48,17 @@ const seed = async ({ screeningData, bookingData }: { screeningData: Screening[]
         screening.location,
         screening.cost,
         screening.is_pay_what_you_want,
-        screening.tmdb_id, 
+        screening.tmdb_id,
         screening.title,
         screening.year,
         screening.poster_url,
         screening.backdrop_url,
         screening.logo_url,
-        screening.description
-      ]
+        screening.description,
+      ];
     })
-  )
-  await db.query(insertScreeningsStr)
+  );
+  await db.query(insertScreeningsStr);
 
   // insert bookings
   const insertBookingsStr = format(
@@ -61,15 +66,10 @@ const seed = async ({ screeningData, bookingData }: { screeningData: Screening[]
       (screening_id, email, charge)
     VALUES %L`,
     bookingData.map((booking) => {
-      return [
-        booking.screening_id,
-        booking.email,
-        booking.charge
-      ]
+      return [booking.screening_id, booking.email, booking.charge];
     })
-  )
-  await db.query(insertBookingsStr)
+  );
+  await db.query(insertBookingsStr);
+};
 
-}
-
-module.exports = seed
+module.exports = seed;
