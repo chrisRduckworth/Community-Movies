@@ -1,4 +1,4 @@
-import { BookingSeed } from "../interfaces.js";
+import { BookingSeed } from "../../../interfaces";
 
 const bookings: BookingSeed[] = [
   {

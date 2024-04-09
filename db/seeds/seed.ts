@@ -1,7 +1,7 @@
 const db = require("../connection");
 const format = require("pg-format");
 
-import { ScreeningSeed, BookingSeed } from "../data/interfaces";
+import { ScreeningSeed, BookingSeed } from "../../interfaces";
 
 const seed = async ({
   screeningData,

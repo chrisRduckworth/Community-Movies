@@ -1,4 +1,4 @@
-import { ScreeningSeed } from "../interfaces";
+import { ScreeningSeed } from "../../../interfaces";
 
 const screenings: ScreeningSeed[] = [
   {

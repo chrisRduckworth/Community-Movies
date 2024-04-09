@@ -77,7 +77,7 @@ describe("GET /api/screenings", () => {
       body: { screenings },
     } = await request(app).get("/api/screenings").expect(200);
 
-    screenings.forEach(({ date }: {date: string}) => {
+    screenings.forEach(({ date }: { date: string }) => {
       expect(date).toEqual(dayjs(date).format());
     });
   });
@@ -87,7 +87,10 @@ describe("GET /api/screenings", () => {
       body: { screenings },
     } = await request(app).get("/api/screenings").expect(200);
 
-    const sortingFunction = ({ date: a }: {date: string}, { date: b }: {date: string}): number => {
+    const sortingFunction = (
+      { date: a }: { date: string },
+      { date: b }: { date: string }
+    ): number => {
       return dayjs(a).isAfter(dayjs(b)) ? 1 : -1;
     };
 
