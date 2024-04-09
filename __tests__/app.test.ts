@@ -3,6 +3,7 @@ const testData = require("../db/data/test-data");
 const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app");
+const dayjs = require("dayjs");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -46,8 +47,8 @@ describe("GET /api", () => {
   });
 });
 
-describe("GET /api/screenings", () => {
-  it.only("should return a list of screening objects", async () => {
+describe.only("GET /api/screenings", () => {
+  it("should return a list of screening objects", async () => {
     const {
       body: { screenings },
     } = await request(app).get("/api/screenings").expect(200);
@@ -68,6 +69,16 @@ describe("GET /api/screenings", () => {
       expect(screening.film).toHaveProperty("title");
       expect(screening.film).toHaveProperty("year");
       expect(screening.film).toHaveProperty("poster_url");
+    });
+  });
+
+  it("should format the date correctly", async () => {
+    const {
+      body: { screenings },
+    } = await request(app).get("/api/screenings").expect(200);
+
+    screenings.forEach((screening: any) => {
+      expect(screening.date).toEqual(dayjs(screening.date).format());
     });
   });
 
