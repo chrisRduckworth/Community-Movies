@@ -147,12 +147,18 @@ describe.only("GET /api/screenings/:screening_id", () => {
 
     expect(screening1).not.toEqual(screening2);
   });
-  it.only("should return 404 if no screening is found with the id", async () => {
+  it("should return 404 if no screening is found with the id", async () => {
     const {
       body: { msg },
     } = await request(app).get("/api/screenings/10000").expect(404);
 
     expect(msg).toBe("Screening not found");
   });
-  it("should return 400 if sent incorrect data type for id", async () => {});
+  it("should return 400 if sent incorrect data type for id", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/screenings/bananas").expect(400);
+
+    expect(msg).toBe("Bad request");
+  });
 });
