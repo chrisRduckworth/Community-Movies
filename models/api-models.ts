@@ -1,4 +1,4 @@
 exports.fetchEndpoints = () => {
-  const endpoints = require("../endpoints.json")
-  return endpoints
-}
+  const endpoints = require("../endpoints.json");
+  return endpoints;
+};
