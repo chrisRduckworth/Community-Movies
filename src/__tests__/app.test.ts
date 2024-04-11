@@ -204,7 +204,25 @@ describe.only("POST /api/screenings/:screening_id", () => {
 
     expect(newCount).toBe(bookingsCount + 1);
   });
-  // tests: invalid domain
+  it("should respond with 403 if the request is sent from an invalid domain", async () => {
+    const reservation = {
+      email: "abc@def.com",
+      charge: 1500,
+    };
+
+    const { body } = await request(app)
+      .post("/api/screenings/2")
+      .send(reservation)
+      .set("Origin", "www.invalid.com")
+      .expect(403);
+    expect(body.msg).toBe("CORS authentication failed");
+
+    const { body: body2 } = await request(app)
+      .post("/api/screenings/2")
+      .send(reservation)
+      .expect(403);
+    expect(body2.msg).toBe("CORS authentication failed");
+  });
   // invalid screening id
   // invalid screening id type
   // invalid booking id
