@@ -112,7 +112,7 @@ describe("GET /api/screenings", () => {
   });
 });
 
-describe.only("GET /api/screenings/:screening_id", () => {
+describe("GET /api/screenings/:screening_id", () => {
   it("should return the correct information", async () => {
     const expectedInfo: ScreeningDetail = {
       date: "2024-04-03T12:00:00.000Z",
@@ -161,4 +161,56 @@ describe.only("GET /api/screenings/:screening_id", () => {
 
     expect(msg).toBe("Bad request");
   });
+});
+
+describe.only("POST /api/screenings/:screening_id", () => {
+  it("should respond with a booking", async () => {
+    const reservation = {
+      email: "abc@def.com",
+      charge: 1500,
+    };
+
+    const { body } = await request(app)
+      .post("/api/screenings/2")
+      .send(reservation)
+      .set("Origin", "www.testdomain.com")
+      .expect(201);
+
+    expect(body).toEqual({
+      booking_id: 31,
+      screening_id: 2,
+      email: "abc@def.com",
+      charge: 1500,
+    });
+  });
+  it("should add the booking to bookings database", async () => {
+    const reservation = {
+      email: "abc@def.com",
+      charge: 1500,
+    };
+
+    const { rows } = await db.query("SELECT COUNT(*) FROM bookings;");
+
+    const bookingsCount = parseInt(rows[0].count);
+
+    await request(app)
+      .post("/api/screenings/2")
+      .send(reservation)
+      .set("Origin", "www.testdomain.com")
+      .expect(201);
+
+    const { rows: rows2 } = await db.query("SELECT COUNT(*) FROM bookings;");
+    const newCount = parseInt(rows2[0].count);
+
+    expect(newCount).toBe(bookingsCount + 1);
+  });
+  // tests: invalid domain
+  // invalid screening id
+  // invalid screening id type
+  // invalid booking id
+  // invalid booking id type
+  // incorrect payment amount
+  // invalid email
+  // invalid email type
+  // incorrect payment data type
 });
