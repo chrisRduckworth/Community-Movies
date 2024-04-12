@@ -163,7 +163,110 @@ describe("GET /api/screenings/:screening_id", () => {
   });
 });
 
-describe.only("POST /api/screenings/:screening_id", () => {
+describe.only("POST /api/screenings/:screening_id/checkout", () => {
+  it("should redirect to a checkout screen", async () => {
+    const body = {
+      charge: 1500
+    }
+
+    await request(app)
+      .post("/api/screenings/2/checkout")
+      .send(body)
+      .set("Origin", "www.testdomain.com")
+      .expect(303)
+      .expect("Location", /https:\/\/checkout\.stripe\.com\/c\/pay\/.*/)
+  })
+  it("should redirecto to a checkout screen when paying what you want", async () => {
+    const body = {
+      charge: 800
+    }
+
+    await request(app)
+      .post("/api/screenings/1/checkout")
+      .send(body)
+      .set("Origin", "www.testdomain.com")
+      .expect(303)
+      .expect("Location", /https:\/\/checkout\.stripe\.com\/c\/pay\/.*/)
+  })
+  it("should respond with 403 if send from an invalid origin", async () => {
+    const { body: { msg } } = await request(app)
+      .post("/api/screenings/2/checkout")
+      .send({ charge: 1500 })
+      .set("Origin", "www.random.com")
+      .expect(403)
+    expect(msg).toBe("CORS authentication failed");
+  })
+  it("should return 404 if no screening with the id is found", async () => {
+    const { body: { msg } } = await request(app)
+      .post("/api/screenings/1000/checkout")
+      .send({ charge: 1500 })
+      .set("Origin", "www.testdomain.com")
+      .expect(404)
+    expect(msg).toBe("Screening not found")
+  })
+  it("should return 400 if invalid screening id is given", async () => {
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings/bananas/checkout")
+      .send({ charge: 1500 })
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+    
+    expect(msg).toBe("Bad request")
+  })
+  it("should return 400 if charge is not equal to cost of paid screening", async () => {
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings/2/checkout")
+      .send({ charge: 100 })
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+
+    expect(msg).toBe("Invalid charge")
+  })
+  it("should return 400 if paying for free screening", async () => {
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings/3/checkout")
+      .send({ charge: 100 })
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+
+    expect(msg).toBe("Invalid charge")
+  })
+  it("should return 400 if given invalid data type for charge", async () => {
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings/2/checkout")
+      .send({ charge: "bananas" })
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+
+    expect(msg).toBe("Invalid charge")
+  })
+  it("should return 400 if give no charge value", async () => {
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings/2/checkout")
+      .send({})
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+
+    expect(msg).toBe("Invalid charge")
+  })
+  it("should return 400 if paying less than minimum stripe charge (30p)", async () => {
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings/1/checkout")
+      .send({charge: 1})
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+
+    expect(msg).toBe("Bad request")
+  })
+  // stripe errors
+  // sripe <= 30p
+  // invalid booking id
+  // invalid booking id type
+  // incorrect payment amount
+  // invalid email
+  // invalid email type
+  // incorrect payment data type
+})
   it("should respond with a booking", async () => {
     const reservation = {
       email: "abc@def.com",
