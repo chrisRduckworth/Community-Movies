@@ -31,7 +31,7 @@ const seed = async ({
   );`);
 
   await db.query(`CREATE TABLE bookings (
-    booking_id SERIAL PRIMARY KEY,
+    booking_id VARCHAR PRIMARY KEY,
     screening_id INT REFERENCES screenings(screening_id) NOT NULL,
     email VARCHAR(255) NOT NULL,
     charge INT NOT NULL
@@ -63,10 +63,10 @@ const seed = async ({
   // insert bookings
   const insertBookingsStr = format(
     `INSERT INTO bookings 
-      (screening_id, email, charge)
+      (booking_id, screening_id, email, charge)
     VALUES %L`,
     bookingData.map((booking) => {
-      return [booking.screening_id, booking.email, booking.charge];
+      return [booking.booking_id, booking.screening_id, booking.email, booking.charge];
     })
   );
   await db.query(insertBookingsStr);
