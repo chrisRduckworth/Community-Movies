@@ -1,9 +1,9 @@
 import { ScreeningOverview, ScreeningDetail } from "../interfaces";
 const db = require("../db/connection");
 const dayjs = require("dayjs");
-const stripeKey = process.env.STRIPE_KEY!
-const frontendDomain = process.env.FRONTEND_DOMAIN!
-const stripe = require('stripe')(stripeKey)
+const stripeKey = process.env.STRIPE_KEY!;
+const frontendDomain = process.env.FRONTEND_DOMAIN!;
+const stripe = require("stripe")(stripeKey);
 
 exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   const { rows }: any = await db.query(`
@@ -100,18 +100,18 @@ exports.fetchScreeningDetails = async (
   return screening;
 };
 
-exports.createCheckout = async (
-  screening_id: string,
-  charge: any
-) => {
-  const { rows } = await db.query(`
+exports.createCheckout = async (screening_id: string, charge: any) => {
+  const { rows } = await db.query(
+    `
     SELECT 
       title, 
       cost, 
       is_pay_what_you_want 
     FROM screenings
     WHERE screening_id = $1;
-`, [screening_id])
+`,
+    [screening_id]
+  );
 
   if (rows.length === 0) {
     throw {
@@ -120,13 +120,13 @@ exports.createCheckout = async (
     };
   }
 
-  const { title, cost, is_pay_what_you_want } = rows[0]
+  const { title, cost, is_pay_what_you_want } = rows[0];
 
   if (!is_pay_what_you_want && cost !== charge) {
     throw {
       status: 400,
-      msg: "Invalid charge"
-    }
+      msg: "Invalid charge",
+    };
   }
 
   const session = await stripe.checkout.sessions.create({
@@ -136,32 +136,38 @@ exports.createCheckout = async (
           currency: "GBP",
           product_data: {
             name: `Ticket ${title}`,
-            metadata: {
-              screening_id
-            },
           },
-        unit_amount: charge
+          unit_amount: charge,
         },
         quantity: 1,
-      }
+      },
     ],
     mode: "payment",
     success_url: `${frontendDomain}screenings/${screening_id}/book/{CHECKOUT_SESSION_ID}`,
-    cancel_url: `${frontendDomain}screenings/${screening_id}`
-  })
+    cancel_url: `${frontendDomain}screenings/${screening_id}`,
+    metadata: {
+      screening_id,
+    },
+  });
 
-  return session.url
-}
+  return session.url;
+};
+
+exports.createBooking = async (
+  booking_id: string,
+  screening_id: string,
+  email: string,
+  charge: number
 ) => {
   const { rows } = await db.query(
     `
     INSERT INTO bookings
-      (screening_id, email, charge)
+      (booking_id, screening_id, email, charge)
     VALUES 
-      ($1, $2, $3)
+      ($1, $2, $3, $4)
     RETURNING *;
     `,
-    [screening_id, email, charge]
+    [booking_id, screening_id, email, charge]
   );
   return rows[0];
 };
