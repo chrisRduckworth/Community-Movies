@@ -53,7 +53,7 @@ describe("GET /api", () => {
   it("should respond with the correct number of controllers", async () => {
     const { body } = await request(app).get("/api").expect(200);
 
-    const controllers = ["api", "screenings", "staff"];
+    const controllers = ["api", "screenings", "staff", "films"];
 
     const controllerFunctions = controllers.map((str) =>
       require(`../controllers/${str}-controllers`)
