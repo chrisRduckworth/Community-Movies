@@ -6,13 +6,13 @@ const {
   postCheckout,
   postBooking,
 } = require("./controllers/screenings-controllers");
-const {
-  postLogin
-} = require("./controllers/staff-controllers")
+const { postLogin } = require("./controllers/staff-controllers");
+const { getFilms } = require("./controllers/films-controllers");
 
 const express = require("express");
 const cors = require("cors");
 const corsOptions = require("./cors_config");
+const { auth } = require("./middleware");
 
 const app = express();
 
@@ -37,7 +37,12 @@ app.use(cors(corsOptions));
 
 app.post("/api/screenings/:screening_id/checkout", postCheckout);
 
-app.post("/api/staff/login", postLogin)
+app.post("/api/staff/login", postLogin);
+
+// these endpoints require JWT authorization
+app.use(auth);
+
+app.get("/api/films", getFilms);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.status) {
