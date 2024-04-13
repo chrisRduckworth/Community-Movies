@@ -3,6 +3,7 @@ const { getEndpoints } = require("./controllers/api-controllers");
 const {
   getScreenings,
   getScreeningDetails,
+  postCheckout,
   postBooking,
 } = require("./controllers/screenings-controllers");
 
@@ -14,18 +15,24 @@ const app = express();
 
 app.use(cors());
 
-app.use(express.json());
-
 app.get("/api", getEndpoints);
 
 app.get("/api/screenings", getScreenings);
 
 app.get("/api/screenings/:screening_id", getScreeningDetails);
 
+app.post(
+  "/api/bookings",
+  express.raw({ type: "application/json" }),
+  postBooking
+);
+
+app.use(express.json());
+
 // these endpoints must come from an allowed origin
 app.use(cors(corsOptions));
 
-app.post("/api/screenings/:screening_id", postBooking);
+app.post("/api/screenings/:screening_id/checkout", postCheckout);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.status) {
@@ -36,7 +43,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  const badReqCodes = ["22P02"];
+  const badReqCodes = ["22P02", "amount_too_small"];
   if (badReqCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad request" });
   } else {
