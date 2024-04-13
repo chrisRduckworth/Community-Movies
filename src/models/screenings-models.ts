@@ -96,3 +96,21 @@ exports.fetchScreeningDetails = async (
 
   return screening;
 };
+
+exports.createBooking = async (
+  screening_id: string,
+  email: any,
+  charge: any
+) => {
+  const { rows } = await db.query(
+    `
+    INSERT INTO bookings
+      (screening_id, email, charge)
+    VALUES 
+      ($1, $2, $3)
+    RETURNING *;
+    `,
+    [screening_id, email, charge]
+  );
+  return rows[0];
+};
