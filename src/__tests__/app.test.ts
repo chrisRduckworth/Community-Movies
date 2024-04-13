@@ -275,3 +275,41 @@ describe("POST /api/screenings/:screening_id/checkout", () => {
     expect(msg).toBe("Bad request");
   });
 });
+
+describe.only("POST /api/staff/login", () => {
+  it("should respond with 201 and a JWT when successfully logged in", async () => {
+    const { body: { msg, token } } = await request(app)
+      .post("/api/staff/login")
+      .send({ password: "test_password" })
+      .set("Origin", "www.testdomain.com")
+      .expect(201)
+    expect(msg).toBe("Login successful")
+    expect(typeof token).toBe("string")
+  })
+  it("should respond with 403 if not coming from a valid url", async () => {
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/staff/login")
+      .send({ password: "test_password" })
+      .set("Origin", "www.random.com")
+      .expect(403);
+    expect(msg).toBe("CORS authentication failed");
+  })
+  it("should respond with 400 failed login if given incorrect password", async () => {
+    const { body : { msg }} = await request(app)
+      .post("/api/staff/login")
+      .send({ password: "invalid" })
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+    expect(msg).toBe("Password does not match")
+  })
+  it("should respond with 400 bad request if given invalid body", async () => {
+    const { body : { msg }} = await request(app)
+      .post("/api/staff/login")
+      .send({ psswrd: "invalid" })
+      .set("Origin", "www.testdomain.com")
+      .expect(400)
+    expect(msg).toBe("Invalid body")
+  })
+})
