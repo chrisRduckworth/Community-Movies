@@ -13,6 +13,7 @@ export interface ScreeningSeed {
 }
 
 export interface BookingSeed {
+  booking_id: string;
   screening_id: number;
   email: string;
   charge: number;

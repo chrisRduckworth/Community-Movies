@@ -1,6 +1,9 @@
 import { ScreeningOverview, ScreeningDetail } from "../interfaces";
 const db = require("../db/connection");
 const dayjs = require("dayjs");
+const stripeKey = process.env.STRIPE_KEY!
+const frontendDomain = process.env.FRONTEND_DOMAIN!
+const stripe = require('stripe')(stripeKey)
 
 exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   const { rows }: any = await db.query(`
@@ -97,10 +100,58 @@ exports.fetchScreeningDetails = async (
   return screening;
 };
 
-exports.createBooking = async (
+exports.createCheckout = async (
   screening_id: string,
-  email: any,
   charge: any
+) => {
+  const { rows } = await db.query(`
+    SELECT 
+      title, 
+      cost, 
+      is_pay_what_you_want 
+    FROM screenings
+    WHERE screening_id = $1;
+`, [screening_id])
+
+  if (rows.length === 0) {
+    throw {
+      status: 404,
+      msg: "Screening not found",
+    };
+  }
+
+  const { title, cost, is_pay_what_you_want } = rows[0]
+
+  if (!is_pay_what_you_want && cost !== charge) {
+    throw {
+      status: 400,
+      msg: "Invalid charge"
+    }
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price_data: {
+          currency: "GBP",
+          product_data: {
+            name: `Ticket ${title}`,
+            metadata: {
+              screening_id
+            },
+          },
+        unit_amount: charge
+        },
+        quantity: 1,
+      }
+    ],
+    mode: "payment",
+    success_url: `${frontendDomain}screenings/${screening_id}/book/{CHECKOUT_SESSION_ID}`,
+    cancel_url: `${frontendDomain}screenings/${screening_id}`
+  })
+
+  return session.url
+}
 ) => {
   const { rows } = await db.query(
     `
