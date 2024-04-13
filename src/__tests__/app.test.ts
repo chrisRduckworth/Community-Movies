@@ -6,9 +6,28 @@ const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app");
 const dayjs = require("dayjs");
+const server = require("./mocks/server");
 
-beforeEach(() => seed(testData));
-afterAll(() => db.end());
+let token = "";
+
+beforeAll(async () => {
+  const { body } = await request(app)
+    .post("/api/staff/login")
+    .send({ password: "test_password" })
+    .set("Origin", "www.testdomain.com");
+  token = body.token;
+  return server.listen({
+    onUnhandledRequest: "bypass",
+  });
+});
+beforeEach(() => {
+  server.resetHandlers();
+  return seed(testData);
+});
+afterAll(() => {
+  server.close();
+  return db.end();
+});
 
 describe("GET /api", () => {
   it("should responds with a JSON object, each key is a valid path", async () => {
@@ -34,7 +53,7 @@ describe("GET /api", () => {
   it("should respond with the correct number of controllers", async () => {
     const { body } = await request(app).get("/api").expect(200);
 
-    const controllers = ["api", "screenings", "staff"];
+    const controllers = ["api", "screenings", "staff", "films"];
 
     const controllerFunctions = controllers.map((str) =>
       require(`../controllers/${str}-controllers`)
@@ -278,14 +297,16 @@ describe("POST /api/screenings/:screening_id/checkout", () => {
 
 describe("POST /api/staff/login", () => {
   it("should respond with 201 and a JWT when successfully logged in", async () => {
-    const { body: { msg, token } } = await request(app)
+    const {
+      body: { msg, token },
+    } = await request(app)
       .post("/api/staff/login")
       .send({ password: "test_password" })
       .set("Origin", "www.testdomain.com")
-      .expect(201)
-    expect(msg).toBe("Login successful")
-    expect(typeof token).toBe("string")
-  })
+      .expect(201);
+    expect(msg).toBe("Login successful");
+    expect(typeof token).toBe("string");
+  });
   it("should respond with 403 if not coming from a valid url", async () => {
     const {
       body: { msg },
@@ -295,21 +316,78 @@ describe("POST /api/staff/login", () => {
       .set("Origin", "www.random.com")
       .expect(403);
     expect(msg).toBe("CORS authentication failed");
-  })
+  });
   it("should respond with 400 failed login if given incorrect password", async () => {
-    const { body : { msg }} = await request(app)
+    const {
+      body: { msg },
+    } = await request(app)
       .post("/api/staff/login")
       .send({ password: "invalid" })
       .set("Origin", "www.testdomain.com")
-      .expect(400)
-    expect(msg).toBe("Password does not match")
-  })
+      .expect(400);
+    expect(msg).toBe("Password does not match");
+  });
   it("should respond with 400 bad request if given invalid body", async () => {
-    const { body : { msg }} = await request(app)
+    const {
+      body: { msg },
+    } = await request(app)
       .post("/api/staff/login")
       .send({ psswrd: "invalid" })
       .set("Origin", "www.testdomain.com")
-      .expect(400)
-    expect(msg).toBe("Invalid body")
-  })
-})
+      .expect(400);
+    expect(msg).toBe("Invalid body");
+  });
+});
+
+describe("GET /api/films", () => {
+  it("returns a list of films", async () => {
+    const {
+      body: { films },
+    } = await request(app)
+      .get("/api/films?title=good")
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+
+    films.forEach((film: any) => {
+      expect(film).toHaveProperty("tmdb_id");
+      expect(typeof film.tmdb_id).toBe("number");
+      expect(film).toHaveProperty("title");
+      expect(typeof film.title).toBe("string");
+      expect(film).toHaveProperty("year");
+      expect(typeof film.year).toBe("number");
+      expect(film).toHaveProperty("poster_url");
+      expect(typeof film.poster_url).toBe("string");
+    });
+  });
+  it("should respond with 403 if not coming from a valid url", async () => {
+    const {
+      body: { msg },
+    } = await request(app)
+      .get("/api/films?title=good")
+      .set("Origin", "www.random.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(403);
+    expect(msg).toBe("CORS authentication failed");
+  });
+  it("should respond with 401 if invalid jwt is given", async () => {
+    const {
+      body: { msg },
+    } = await request(app)
+      .get("/api/films?title=good")
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer 12345`)
+      .expect(401);
+    expect(msg).toBe("Authorization failed");
+  });
+  it("should respond with 400 if given inalid query", async () => {
+    const {
+      body: { msg },
+    } = await request(app)
+      .get("/api/films?bananas=yellow")
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    expect(msg).toBe("Invalid search term");
+  });
+});

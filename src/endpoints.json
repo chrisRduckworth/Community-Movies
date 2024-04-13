@@ -77,5 +77,20 @@
       "msg": "Login successful",
       "token": "as8u2qenjqdfq0d12e1dno101"
     }
-  }
+  },
+  "GET /api/films": {
+    "description": "returns a list of films matching the search query",
+    "queries": ["title"],
+    "format": "List of JSON objects",
+    "exampleResponse": {
+      "films": [
+        {
+          "tmdb_id": 489,
+          "title": "Good Will hunting",
+          "year": 1997,
+          "poster_url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bABCBKYBK7A5G1x0FzoeoNfuj2.jpg"
+        }
+      ]
+    }
+  } 
 }
