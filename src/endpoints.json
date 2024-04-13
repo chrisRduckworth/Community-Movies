@@ -51,5 +51,31 @@
         "is_pay_what_you_want": true
       }
     }
+  },
+  "POST /api/screenings/:screening_id/checkout": {
+    "description": "begins the checkout process for booking a ticket",
+    "queries": [],
+    "format": "redirect",
+    "exampleResponse": "https://checkout.stripe.com/c/pay/url"
+  },
+  "POST /api/checkout": {
+    "description": "creates booking",
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": {
+      "booking_id": "123faf1",
+      "screening_id": 2,
+      "email": "abc@def.com",
+      "charge": 800
+    }
+  },
+  "POST /api/staff/login": {
+    "description": "staff login",
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": {
+      "msg": "Login successful",
+      "token": "as8u2qenjqdfq0d12e1dno101"
+    }
   }
 }
