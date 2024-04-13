@@ -6,6 +6,9 @@ const {
   postCheckout,
   postBooking,
 } = require("./controllers/screenings-controllers");
+const {
+  postLogin
+} = require("./controllers/staff-controllers")
 
 const express = require("express");
 const cors = require("cors");
@@ -33,6 +36,8 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 app.post("/api/screenings/:screening_id/checkout", postCheckout);
+
+app.post("/api/staff/login", postLogin)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.status) {
