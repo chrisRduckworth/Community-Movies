@@ -68,5 +68,14 @@
       "email": "abc@def.com",
       "charge": 800
     }
+  },
+  "POST /api/staff/login": {
+    "description": "staff login",
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": {
+      "msg": "Login successful",
+      "token": "as8u2qenjqdfq0d12e1dno101"
+    }
   }
 }

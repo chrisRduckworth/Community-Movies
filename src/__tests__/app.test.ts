@@ -34,7 +34,7 @@ describe("GET /api", () => {
   it("should respond with the correct number of controllers", async () => {
     const { body } = await request(app).get("/api").expect(200);
 
-    const controllers = ["api", "screenings"];
+    const controllers = ["api", "screenings", "staff"];
 
     const controllerFunctions = controllers.map((str) =>
       require(`../controllers/${str}-controllers`)
@@ -276,7 +276,7 @@ describe("POST /api/screenings/:screening_id/checkout", () => {
   });
 });
 
-describe.only("POST /api/staff/login", () => {
+describe("POST /api/staff/login", () => {
   it("should respond with 201 and a JWT when successfully logged in", async () => {
     const { body: { msg, token } } = await request(app)
       .post("/api/staff/login")
