@@ -4,7 +4,7 @@ const dayjs = require("dayjs");
 const stripeKey = process.env.STRIPE_KEY!;
 const frontendDomain = process.env.FRONTEND_DOMAIN!;
 const stripe = require("stripe")(stripeKey);
-const axios = require("axios")
+const axios = require("axios");
 
 exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   const { rows }: any = await db.query(`
@@ -173,26 +173,35 @@ exports.createBooking = async (
   return rows[0];
 };
 
-exports.createScreening = async (tmdb_id: any, location: any, date: any, cost: any, is_pay_what_you_want: any) => {
-  const tmdbKey = process.env.TMDB_KEY
+exports.createScreening = async (
+  tmdb_id: any,
+  location: any,
+  date: any,
+  cost: any,
+  is_pay_what_you_want: any
+) => {
+  const tmdbKey = process.env.TMDB_KEY;
   const tmdbApi = axios.create({
     baseURL: "https://api.themoviedb.org/3",
     headers: {
       accept: "application/json",
-      Authorization: `Bearer ${tmdbKey}`
-    }
-  })
-  const { data } = await tmdbApi.get(`/movie/${tmdb_id}`)
+      Authorization: `Bearer ${tmdbKey}`,
+    },
+  });
+  const { data } = await tmdbApi.get(`/movie/${tmdb_id}`);
 
-  const images = await tmdbApi.get(`/movie/${tmdb_id}/images?include_image_language=en`)
+  const images = await tmdbApi.get(
+    `/movie/${tmdb_id}/images?include_image_language=en`
+  );
 
-  const title = data.original_title
-  const year = data.release_date.slice(0,4)
-  const description = data.overview
-  const poster_url = `https://image.tmdb.org/t/p/original${images.data.posters[0].file_path}`
-  const backdrop_url = `https://image.tmdb.org/t/p/original${images.data.backdrops[0].file_path}`
+  const title = data.original_title;
+  const year = data.release_date.slice(0, 4);
+  const description = data.overview;
+  const poster_url = `https://image.tmdb.org/t/p/original${images.data.posters[0].file_path}`;
+  const backdrop_url = `https://image.tmdb.org/t/p/original${images.data.backdrops[0].file_path}`;
 
-  const { rows } = await db.query(`
+  const { rows } = await db.query(
+    `
     INSERT INTO screenings
       (
         date, 
@@ -208,7 +217,8 @@ exports.createScreening = async (tmdb_id: any, location: any, date: any, cost: a
       )
     VALUES
       ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    RETURNING *;`, [
+    RETURNING *;`,
+    [
       date,
       location,
       cost,
@@ -218,8 +228,9 @@ exports.createScreening = async (tmdb_id: any, location: any, date: any, cost: a
       year,
       poster_url,
       backdrop_url,
-      description
-    ])
+      description,
+    ]
+  );
   return {
     screening_id: rows[0].screening_id,
     location: rows[0].location,
@@ -232,7 +243,7 @@ exports.createScreening = async (tmdb_id: any, location: any, date: any, cost: a
       year: rows[0].year,
       poster_url: rows[0].poster_url,
       backdrop_url: rows[0].backdrop_url,
-      description: rows[0].description
-    }
-  }
-}
+      description: rows[0].description,
+    },
+  };
+};
