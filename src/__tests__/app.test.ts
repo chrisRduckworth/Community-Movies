@@ -391,3 +391,257 @@ describe("GET /api/films", () => {
     expect(msg).toBe("Invalid search term");
   });
 });
+
+describe("POST /api/screenings", () => {
+  it("should respond with the screening", async () => {
+    const screening = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+    const {
+      body: {
+        screening_id,
+        location,
+        date,
+        cost,
+        is_pay_what_you_want,
+        film: { tmdb_id, title, year, poster_url, backdrop_url, description },
+      },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(201);
+
+    expect(typeof screening_id).toBe("number");
+    expect(location).toBe("123 Waterloo Road, London, A1 9PB");
+    expect(date).toBe("2024-05-07T16:00:00.000Z");
+    expect(cost).toBe(0);
+    expect(is_pay_what_you_want).toBe(true);
+    expect(tmdb_id).toBe(489);
+    expect(title).toBe("Good Will Hunting");
+    expect(year).toBe(1997);
+    expect(poster_url).toBe(
+      "https://image.tmdb.org/t/p/original/bABCBKYBK7A5G1x0FzoeoNfuj2.jpg"
+    );
+    expect(backdrop_url).toBe(
+      "https://image.tmdb.org/t/p/original/55NKVbGDqqsu5tlVmnKksrX7Wtw.jpg"
+    );
+    expect(description).toBe(
+      "When professors discover that an aimless janitor is also a math genius, a therapist helps the young man confront the demons that are holding him back."
+    );
+  });
+  it("should add the screening to the database", async () => {
+    const {
+      rows: [{ count }],
+    } = await db.query("SELECT COUNT(screening_id) FROM screenings;");
+
+    const screening = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+
+    await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(201);
+
+    const {
+      rows: [{ count: newCount }],
+    } = await db.query("SELECT COUNT(screening_id) FROM screenings;");
+
+    expect(parseInt(newCount)).toBe(parseInt(count) + 1);
+  });
+  it("should respond with 403 if not coming from a valid url", async () => {
+    const screening = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.random.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(403);
+    expect(msg).toBe("CORS authentication failed");
+  });
+  it("should respond with 401 if invalid jwt is given", async () => {
+    const screening = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer 12345`)
+      .expect(401);
+    expect(msg).toBe("Authorization failed");
+  });
+  it("should respond with 400 bad request if tmdb id is not found", async () => {
+    const screening = {
+      tmdb_id: 10000000,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+
+    expect(msg).toBe("Movie not found");
+  });
+  it("should respond with 400 bad request if given invalid tmdb id type", async () => {
+    const screening = {
+      tmdb_id: "bananas",
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+
+    expect(msg).toBe("Invalid tmdb id");
+  });
+  it("should respond with 400 bad request if given invalid data types", async () => {
+    // invalid location
+    const screening = {
+      tmdb_id: 489,
+      location: 12,
+      date: "2024-05-06 14:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    expect(msg).toBe("Invalid body");
+
+    // invalid date
+    const screening2 = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: false,
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+    const {
+      body: { msg: msg2 },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening2)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    expect(msg2).toBe("Invalid body");
+
+    // invalid cost
+    const screening3 = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-06 14:00:00+01",
+      cost: "bananas",
+      is_pay_what_you_want: true,
+    };
+    const {
+      body: { msg: msg3 },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening3)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    expect(msg3).toBe("Invalid body");
+
+    // invalid is_pay_what_you_want
+    const screening4 = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-06 14:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: "bananas",
+    };
+    const {
+      body: { msg: msg4 },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening4)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    expect(msg4).toBe("Invalid body");
+  });
+  it("should return 400 bad request if sent a malformed body", async () => {
+    const screening = {};
+
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    expect(msg).toBe("Invalid body");
+  });
+  it("should return 400 bad request if send a non-zero cost and is_pay_what_you_want is true", async () => {
+    const screening = {
+      tmdb_id: 489,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-06 14:00:00+01",
+      cost: 800,
+      is_pay_what_you_want: true,
+    };
+
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    expect(msg).toBe(
+      "is_pay_what_you_want cannot be true when cost is greater than 0"
+    );
+  });
+});
