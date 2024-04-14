@@ -646,7 +646,7 @@ describe("POST /api/screenings", () => {
   });
 });
 
-describe.only("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
+describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
   it("should return the booking", async () => {
     const { body } = await request(app)
       .get("/api/screenings/12/bookings/1")
