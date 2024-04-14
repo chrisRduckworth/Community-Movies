@@ -404,4 +404,18 @@ exports.handlers = [
       ],
     });
   }),
+  http.get("https://api.themoviedb.org/3/movie/10000000", () => {
+    return HttpResponse.json({
+      "success": false,
+      "status_code": 34,
+      "status_message": "The resource you requested could not be found."
+    })
+  }),
+  http.get("https://api.themoviedb.org/3/movie/bananas", () => {
+    return HttpResponse.json({
+      "success": false,
+      "status_code": 6,
+      "status_message": "Invalid id: The pre-requisite id is invalid or not found."
+    })
+  })
 ];
