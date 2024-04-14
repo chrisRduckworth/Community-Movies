@@ -92,5 +92,24 @@
         }
       ]
     }
-  } 
+  },
+  "POST /api/screenings": {
+    "description": "creates a new screening",
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": {
+      "screening_id": 19,
+      "location": "123 Waterloo Road, London, AB1 2CD",
+      "date": "2024-04-09T12:00:00.000Z",
+      "cost": 0,
+      "is_pay_what_you_want": true,
+      "film": {
+        "tmdb_id": 89,
+        "title": "Good Will Hunting",
+        "poster_url": "https://image.tmdb.org/t/p/original/example.jpg",
+        "backdrop_url": "https://image.tmdb.org/t/p/original/example.jpg",
+        "description": "When professors discover that an aimless janitor is also a math genius, a therapist helps the young man confront the demons that are holding him back."
+      }
+    }
+  }
 }
