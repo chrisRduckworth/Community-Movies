@@ -645,3 +645,53 @@ describe("POST /api/screenings", () => {
     );
   });
 });
+
+describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
+  it("should return the booking", async () => {
+    const { body } = await request(app)
+      .get("/api/screenings/12/bookings/1")
+      .expect(200);
+
+    expect(body).toEqual({
+      booking_id: 1,
+      email: "john.doe@example.com",
+      charge: 1800,
+      screening: {
+        date: "2024-04-25T17:00:00.000Z",
+        location: "Baker Street, London, England",
+        title: "Sherlock Holmes",
+        year: 2009,
+      },
+    });
+  });
+
+  it("should return 404 if screening is not found", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/screenings/10000/bookings/1").expect(404);
+
+    expect(msg).toBe("No booking found");
+  });
+  it("should return 404 if booking is not found", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/screenings/1/bookings/10000").expect(404);
+
+    expect(msg).toBe("No booking found");
+  });
+  it("should return 400 if screening is invalid data type", async () => {
+    const {
+      body: { msg },
+    } = await request(app)
+      .get("/api/screenings/bananas/bookings/2")
+      .expect(400);
+
+    expect(msg).toBe("Bad request");
+  });
+  it("should return 404 if screening_id does not match id from booking", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/screenings/1/bookings/1").expect(404);
+    expect(msg).toBe("No booking found");
+  });
+});

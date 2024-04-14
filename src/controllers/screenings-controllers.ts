@@ -5,6 +5,7 @@ const {
   createCheckout,
   createBooking,
   createScreening,
+  fetchBooking
 } = require("../models/screenings-models");
 const stripeKey = process.env.STRIPE_KEY!;
 const stripe = require("stripe")(stripeKey);
@@ -91,10 +92,21 @@ const postScreening: RequestHandler = async (req, res, next) => {
   }
 };
 
+const getBooking: RequestHandler = async (req, res, next) => {
+  try {
+    const { screening_id, booking_id } = req.params
+    const booking = await fetchBooking(screening_id, booking_id)
+    res.status(200).send(booking)
+  } catch (e) {
+    next(e)
+  }
+}
+
 module.exports = {
   getScreenings,
   getScreeningDetails,
   postCheckout,
   postBooking,
   postScreening,
+  getBooking
 };
