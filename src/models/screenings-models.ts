@@ -287,25 +287,34 @@ exports.createScreening = async (
 };
 
 exports.fetchBooking = async (screening_id: any, booking_id: any) => {
-  const { rows: [
-    {
-      booking_id: id,
-      email,
-      charge,
-      date,
-      location,
-      title,
-      year
-    }
-  ] } = await db.query(`
+  const { rows } = await db.query(
+    `
     SELECT 
       booking_id, email, charge, date, location, title, year
     FROM bookings 
     JOIN screenings
     ON bookings.screening_id = screenings.screening_id
-    WHERE booking_id=$1;
-`, [booking_id])
+    WHERE booking_id=$1 AND screenings.screening_id=$2;
+`,
+    [booking_id, screening_id]
+  );
 
+  if (rows.length === 0) {
+    throw {
+      status: 404,
+      msg: "No booking found",
+    };
+  }
+
+  const {
+    booking_id: id,
+    email,
+    charge,
+    date,
+    location,
+    title,
+    year,
+  } = rows[0];
   return {
     booking_id: parseInt(id),
     email,
@@ -314,7 +323,7 @@ exports.fetchBooking = async (screening_id: any, booking_id: any) => {
       date,
       location,
       title,
-      year
-    }
-  }
-}
+      year,
+    },
+  };
+};
