@@ -188,11 +188,30 @@ exports.createScreening = async (
       Authorization: `Bearer ${tmdbKey}`,
     },
   });
-  const { data } = await tmdbApi.get(`/movie/${tmdb_id}`);
+  let data
+  let images
+  try {
+    data = await tmdbApi.get(`/movie/${tmdb_id}`);
 
-  const images = await tmdbApi.get(
-    `/movie/${tmdb_id}/images?include_image_language=en`
-  );
+    images = await tmdbApi.get(
+      `/movie/${tmdb_id}/images?include_image_language=en`
+    );
+  } catch (e: any) {
+    if (e.response.data.status_code === 34) {
+      throw {
+        status: 400,
+        msg: "Movie not found"
+      }
+    }
+    if(e.response.data.status_code === 6) {
+      throw {
+        status: 400,
+        msg: "Invalid tmdb id"
+      }
+    }
+    throw(e)
+  }
+  data = data.data
 
   const title = data.original_title;
   const year = data.release_date.slice(0, 4);
