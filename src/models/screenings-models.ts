@@ -285,3 +285,36 @@ exports.createScreening = async (
     },
   };
 };
+
+exports.fetchBooking = async (screening_id: any, booking_id: any) => {
+  const { rows: [
+    {
+      booking_id: id,
+      email,
+      charge,
+      date,
+      location,
+      title,
+      year
+    }
+  ] } = await db.query(`
+    SELECT 
+      booking_id, email, charge, date, location, title, year
+    FROM bookings 
+    JOIN screenings
+    ON bookings.screening_id = screenings.screening_id
+    WHERE booking_id=$1;
+`, [booking_id])
+
+  return {
+    booking_id: parseInt(id),
+    email,
+    charge,
+    screening: {
+      date,
+      location,
+      title,
+      year
+    }
+  }
+}

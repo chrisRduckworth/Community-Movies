@@ -6,6 +6,7 @@ const {
   postCheckout,
   postBooking,
   postScreening,
+  getBooking
 } = require("./controllers/screenings-controllers");
 const { postLogin } = require("./controllers/staff-controllers");
 const { getFilms } = require("./controllers/films-controllers");
@@ -30,6 +31,8 @@ app.post(
   express.raw({ type: "application/json" }),
   postBooking
 );
+
+app.get("/api/screenings/:screening_id/bookings/:booking_id", getBooking)
 
 app.use(express.json());
 
