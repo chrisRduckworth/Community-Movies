@@ -5,6 +5,7 @@ const {
   getScreeningDetails,
   postCheckout,
   postBooking,
+  postScreening
 } = require("./controllers/screenings-controllers");
 const { postLogin } = require("./controllers/staff-controllers");
 const { getFilms } = require("./controllers/films-controllers");
@@ -43,6 +44,8 @@ app.post("/api/staff/login", postLogin);
 app.use(auth);
 
 app.get("/api/films", getFilms);
+
+app.post("/api/screenings", postScreening)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.status) {
