@@ -111,5 +111,21 @@
         "description": "When professors discover that an aimless janitor is also a math genius, a therapist helps the young man confront the demons that are holding him back."
       }
     }
+  },
+  "GET /api/screenings/:screening_id/bookings/:booking_id": {
+    "description": "returns the booking",
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": {
+      "booking_id": "1a",
+      "email": "abc@def.com",
+      "charge": 450,
+      "screening": {
+        "date": "2024-04-09T12:00:00.000Z",
+        "location": "123 Waterloo Road, London, AB1 2CD",
+        "title": "Sherlock Holmes",
+        "year": 2009
+      }
+    }
   }
 }
