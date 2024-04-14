@@ -180,6 +180,25 @@ exports.createScreening = async (
   cost: any,
   is_pay_what_you_want: any
 ) => {
+  if (
+    typeof location !== "string" ||
+    typeof date !== "string" ||
+    typeof cost !== "number" ||
+    typeof is_pay_what_you_want !== "boolean"
+  ) {
+    throw {
+      status: 400,
+      msg: "Invalid body",
+    };
+  }
+
+  if (is_pay_what_you_want && cost > 0) {
+    throw {
+      status: 400,
+      msg: "is_pay_what_you_want cannot be true when cost is greater than 0",
+    };
+  }
+
   const tmdbKey = process.env.TMDB_KEY;
   const tmdbApi = axios.create({
     baseURL: "https://api.themoviedb.org/3",
@@ -188,8 +207,8 @@ exports.createScreening = async (
       Authorization: `Bearer ${tmdbKey}`,
     },
   });
-  let data
-  let images
+  let data;
+  let images;
   try {
     data = await tmdbApi.get(`/movie/${tmdb_id}`);
 
@@ -200,18 +219,18 @@ exports.createScreening = async (
     if (e.response.data.status_code === 34) {
       throw {
         status: 400,
-        msg: "Movie not found"
-      }
+        msg: "Movie not found",
+      };
     }
-    if(e.response.data.status_code === 6) {
+    if (e.response.data.status_code === 6) {
       throw {
         status: 400,
-        msg: "Invalid tmdb id"
-      }
+        msg: "Invalid tmdb id",
+      };
     }
-    throw(e)
+    throw e;
   }
-  data = data.data
+  data = data.data;
 
   const title = data.original_title;
   const year = data.release_date.slice(0, 4);

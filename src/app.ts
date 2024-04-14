@@ -5,7 +5,7 @@ const {
   getScreeningDetails,
   postCheckout,
   postBooking,
-  postScreening
+  postScreening,
 } = require("./controllers/screenings-controllers");
 const { postLogin } = require("./controllers/staff-controllers");
 const { getFilms } = require("./controllers/films-controllers");
@@ -45,7 +45,7 @@ app.use(auth);
 
 app.get("/api/films", getFilms);
 
-app.post("/api/screenings", postScreening)
+app.post("/api/screenings", postScreening);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.status) {
@@ -56,7 +56,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  const badReqCodes = ["22P02", "amount_too_small"];
+  const badReqCodes = ["22P02", "amount_too_small", "22008"];
   if (badReqCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad request" });
   } else {
