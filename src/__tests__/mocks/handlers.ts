@@ -142,7 +142,6 @@ exports.handlers = [
     });
   }),
   http.get("https://api.themoviedb.org/3/movie/489/images", () => {
-    console.log("in images catch");
     return HttpResponse.json({
       backdrops: [
         {

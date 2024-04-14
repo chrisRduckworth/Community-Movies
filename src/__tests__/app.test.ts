@@ -499,7 +499,41 @@ describe.only("POST /api/screenings", () => {
       .expect(401);
     expect(msg).toBe("Authorization failed");
   });
-  // tmdb_id not found
+  it("should respond with 400 bad request if tmdb id is not found", async () => {
+    const screening = {
+      tmdb_id: 10000000,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    
+    expect(msg).toBe("Movie not found")
+  })
+  it("should respond with 400 bad request if given invalid tmdb id type", async () => {
+
+    const screening = {
+      tmdb_id: "bananas",
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+    const { body: { msg }} = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+    
+    expect(msg).toBe("Invalid tmdb id")
+  })
   // date formats
   // missing fields
   // invalid data types
