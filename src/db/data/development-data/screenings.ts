@@ -87,7 +87,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-04-22T15:00:00+01:00",
-    location: "Bagshaw Hall, Bagshaw Hill, Bakewell DE45 1DL",
+    location: "Bagshaw Hall, Bagshaw Hill, Bakewell, DE45 1DL",
     cost: 300,
     is_pay_what_you_want: false,
     tmdb_id: 595,
@@ -104,7 +104,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-05-07T13:00:00+01:00",
-    location: "12A Lion St, Hay-on-Wye, Hereford HR3 5AB",
+    location: "12A Lion St, Hay-on-Wye, Hereford, HR3 5AB",
     cost: 500,
     is_pay_what_you_want: false,
     tmdb_id: 212,
@@ -170,7 +170,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-05-20T17:00:00+01:00",
-    location: "1TN, Market St, Alnwick",
+    location: "1TN, Market St, Alnwick, NE66 1LR",
     cost: 700,
     is_pay_what_you_want: false,
     tmdb_id: 446,
@@ -201,7 +201,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-05-08T12:00:00+01:00",
-    location: "Padstow Memorial Hall, Riverside, Padstow PL28 8BY",
+    location: "Padstow Memorial Hall, Riverside, Padstow, PL28 8BY",
     cost: 700,
     is_pay_what_you_want: false,
     tmdb_id: 422,
@@ -267,7 +267,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-05-18T16:00:00+01:00",
-    location: "12A Lion St, Hay-on-Wye, Hereford HR3 5AB",
+    location: "12A Lion St, Hay-on-Wye, Hereford, HR3 5AB",
     cost: 800,
     is_pay_what_you_want: false,
     tmdb_id: 307,
@@ -348,7 +348,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-05-09T18:00:00+01:00",
-    location: "Bagshaw Hall, Bagshaw Hill, Bakewell DE45 1DL",
+    location: "Bagshaw Hall, Bagshaw Hill, Bakewell, DE45 1DL",
     cost: 0,
     is_pay_what_you_want: true,
     tmdb_id: 584,
@@ -365,7 +365,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-05-27T18:00:00+01:00",
-    location: "1TN, Market St, Alnwick",
+    location: "1TN, Market St, Alnwick, NE66 1LR",
     cost: 900,
     is_pay_what_you_want: false,
     tmdb_id: 530,
@@ -481,7 +481,7 @@ const screenings: ScreeningSeed[] = [
   },
   {
     date: "2024-05-22T12:00:00+01:00",
-    location: "Padstow Memorial Hall, Riverside, Padstow PL28 8BY",
+    location: "Padstow Memorial Hall, Riverside, Padstow, PL28 8BY",
     cost: 100,
     is_pay_what_you_want: false,
     tmdb_id: 201,
