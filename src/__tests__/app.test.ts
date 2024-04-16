@@ -189,24 +189,27 @@ describe("POST /api/screenings/:screening_id/checkout", () => {
       charge: 1500,
     };
 
-    await request(app)
+    const { body: { session_url }} = await request(app)
       .post("/api/screenings/2/checkout")
       .send(body)
       .set("Origin", "www.testdomain.com")
-      .expect(303)
-      .expect("Location", /https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
+      .expect(201)
+
+    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/)
   });
   it("should redirecto to a checkout screen when paying what you want", async () => {
     const body = {
       charge: 800,
     };
 
-    await request(app)
+    const { body: { session_url }} = await request(app)
       .post("/api/screenings/1/checkout")
       .send(body)
       .set("Origin", "www.testdomain.com")
-      .expect(303)
-      .expect("Location", /https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
+      .expect(201)
+
+    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/)
+      
   });
   it("should respond with 403 if send from an invalid origin", async () => {
     const {

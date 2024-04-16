@@ -148,7 +148,7 @@ exports.createCheckout = async (screening_id: string, charge: any) => {
     ],
     mode: "payment",
     success_url: `${frontendDomain}screenings/${screening_id}/book/{CHECKOUT_SESSION_ID}`,
-    cancel_url: `${frontendDomain}screenings/${screening_id}`,
+    cancel_url: `${frontendDomain}screenings/${screening_id}/book`,
     metadata: {
       screening_id,
     },

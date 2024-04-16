@@ -34,9 +34,8 @@ const postCheckout: RequestHandler = async (req, res, next) => {
   try {
     const { screening_id } = req.params;
     const { charge } = req.body;
-    const sessionUrl = await createCheckout(screening_id, charge);
-    console.log(screening_id, charge, sessionUrl);
-    res.redirect(303, sessionUrl);
+    const session_url = await createCheckout(screening_id, charge);
+    res.status(201).send({ session_url });
   } catch (e) {
     next(e);
   }
