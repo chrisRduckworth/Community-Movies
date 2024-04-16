@@ -25,6 +25,7 @@ export interface ScreeningOverview {
     year: number;
     poster_url: string;
   };
+  screening_id: number;
   location: string;
   date: string;
   cost: number;

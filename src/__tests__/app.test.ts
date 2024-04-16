@@ -78,8 +78,9 @@ describe("GET /api/screenings", () => {
 
     screenings.forEach((screening: any) => {
       // screening properties
-      expect(Object.keys(screening)).toHaveLength(5);
+      expect(Object.keys(screening)).toHaveLength(6);
       expect(screening).toHaveProperty("film");
+      expect(screening).toHaveProperty("screening_id")
       expect(screening).toHaveProperty("location");
       expect(screening).toHaveProperty("date");
       expect(screening).toHaveProperty("cost");

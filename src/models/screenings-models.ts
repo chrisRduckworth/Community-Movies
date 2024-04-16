@@ -9,6 +9,7 @@ const axios = require("axios");
 exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   const { rows }: any = await db.query(`
   SELECT 
+    screening_id,
     title,
     year,
     poster_url,
@@ -21,6 +22,7 @@ exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   ORDER BY date ASC;`);
   const screenings: ScreeningOverview[] = rows.map((screening: any) => {
     const {
+      screening_id,
       title,
       year,
       poster_url,
@@ -35,6 +37,7 @@ exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
         year,
         poster_url,
       },
+      screening_id,
       location,
       date: dayjs(date).format(),
       cost,
