@@ -85,7 +85,7 @@ const postScreening: RequestHandler = async (req, res, next) => {
       cost,
       is_pay_what_you_want
     );
-    res.status(201).send(screening);
+    res.status(201).send({screening});
   } catch (e) {
     next(e);
   }

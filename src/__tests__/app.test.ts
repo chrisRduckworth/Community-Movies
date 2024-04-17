@@ -407,12 +407,14 @@ describe("POST /api/screenings", () => {
     };
     const {
       body: {
-        screening_id,
-        location,
-        date,
-        cost,
-        is_pay_what_you_want,
-        film: { tmdb_id, title, year, poster_url, backdrop_url, description },
+        screening: {
+          screening_id,
+          location,
+          date,
+          cost,
+          is_pay_what_you_want,
+          film: { tmdb_id, title, year, poster_url, backdrop_url, description },
+        },
       },
     } = await request(app)
       .post("/api/screenings")
