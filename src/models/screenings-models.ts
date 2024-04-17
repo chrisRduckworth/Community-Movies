@@ -9,6 +9,7 @@ const axios = require("axios");
 exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   const { rows }: any = await db.query(`
   SELECT 
+    screening_id,
     title,
     year,
     poster_url,
@@ -21,6 +22,7 @@ exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
   ORDER BY date ASC;`);
   const screenings: ScreeningOverview[] = rows.map((screening: any) => {
     const {
+      screening_id,
       title,
       year,
       poster_url,
@@ -35,6 +37,7 @@ exports.fetchScreenings = async (): Promise<ScreeningOverview[]> => {
         year,
         poster_url,
       },
+      screening_id,
       location,
       date: dayjs(date).format(),
       cost,
@@ -145,7 +148,7 @@ exports.createCheckout = async (screening_id: string, charge: any) => {
     ],
     mode: "payment",
     success_url: `${frontendDomain}screenings/${screening_id}/book/{CHECKOUT_SESSION_ID}`,
-    cancel_url: `${frontendDomain}screenings/${screening_id}`,
+    cancel_url: `${frontendDomain}screenings/${screening_id}/book`,
     metadata: {
       screening_id,
     },
@@ -316,7 +319,7 @@ exports.fetchBooking = async (screening_id: any, booking_id: any) => {
     year,
   } = rows[0];
   return {
-    booking_id: parseInt(id),
+    booking_id: id,
     email,
     charge,
     screening: {

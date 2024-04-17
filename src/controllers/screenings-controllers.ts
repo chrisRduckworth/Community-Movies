@@ -34,9 +34,8 @@ const postCheckout: RequestHandler = async (req, res, next) => {
   try {
     const { screening_id } = req.params;
     const { charge } = req.body;
-    const sessionUrl = await createCheckout(screening_id, charge);
-    console.log(screening_id, charge, sessionUrl);
-    res.redirect(303, sessionUrl);
+    const session_url = await createCheckout(screening_id, charge);
+    res.status(201).send({ session_url });
   } catch (e) {
     next(e);
   }
@@ -86,7 +85,7 @@ const postScreening: RequestHandler = async (req, res, next) => {
       cost,
       is_pay_what_you_want
     );
-    res.status(201).send(screening);
+    res.status(201).send({screening});
   } catch (e) {
     next(e);
   }
@@ -96,7 +95,7 @@ const getBooking: RequestHandler = async (req, res, next) => {
   try {
     const { screening_id, booking_id } = req.params
     const booking = await fetchBooking(screening_id, booking_id)
-    res.status(200).send(booking)
+    res.status(200).send({ booking })
   } catch (e) {
     next(e)
   }

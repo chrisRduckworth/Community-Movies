@@ -78,8 +78,9 @@ describe("GET /api/screenings", () => {
 
     screenings.forEach((screening: any) => {
       // screening properties
-      expect(Object.keys(screening)).toHaveLength(5);
+      expect(Object.keys(screening)).toHaveLength(6);
       expect(screening).toHaveProperty("film");
+      expect(screening).toHaveProperty("screening_id");
       expect(screening).toHaveProperty("location");
       expect(screening).toHaveProperty("date");
       expect(screening).toHaveProperty("cost");
@@ -188,24 +189,30 @@ describe("POST /api/screenings/:screening_id/checkout", () => {
       charge: 1500,
     };
 
-    await request(app)
+    const {
+      body: { session_url },
+    } = await request(app)
       .post("/api/screenings/2/checkout")
       .send(body)
       .set("Origin", "www.testdomain.com")
-      .expect(303)
-      .expect("Location", /https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
+      .expect(201);
+
+    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
   });
   it("should redirecto to a checkout screen when paying what you want", async () => {
     const body = {
       charge: 800,
     };
 
-    await request(app)
+    const {
+      body: { session_url },
+    } = await request(app)
       .post("/api/screenings/1/checkout")
       .send(body)
       .set("Origin", "www.testdomain.com")
-      .expect(303)
-      .expect("Location", /https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
+      .expect(201);
+
+    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
   });
   it("should respond with 403 if send from an invalid origin", async () => {
     const {
@@ -403,12 +410,14 @@ describe("POST /api/screenings", () => {
     };
     const {
       body: {
-        screening_id,
-        location,
-        date,
-        cost,
-        is_pay_what_you_want,
-        film: { tmdb_id, title, year, poster_url, backdrop_url, description },
+        screening: {
+          screening_id,
+          location,
+          date,
+          cost,
+          is_pay_what_you_want,
+          film: { tmdb_id, title, year, poster_url, backdrop_url, description },
+        },
       },
     } = await request(app)
       .post("/api/screenings")
@@ -648,12 +657,12 @@ describe("POST /api/screenings", () => {
 
 describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
   it("should return the booking", async () => {
-    const { body } = await request(app)
-      .get("/api/screenings/12/bookings/1")
-      .expect(200);
+    const {
+      body: { booking },
+    } = await request(app).get("/api/screenings/12/bookings/1").expect(200);
 
-    expect(body).toEqual({
-      booking_id: 1,
+    expect(booking).toEqual({
+      booking_id: "1",
       email: "john.doe@example.com",
       charge: 1800,
       screening: {
