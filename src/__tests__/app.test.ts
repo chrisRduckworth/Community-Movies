@@ -80,7 +80,7 @@ describe("GET /api/screenings", () => {
       // screening properties
       expect(Object.keys(screening)).toHaveLength(6);
       expect(screening).toHaveProperty("film");
-      expect(screening).toHaveProperty("screening_id")
+      expect(screening).toHaveProperty("screening_id");
       expect(screening).toHaveProperty("location");
       expect(screening).toHaveProperty("date");
       expect(screening).toHaveProperty("cost");
@@ -189,27 +189,30 @@ describe("POST /api/screenings/:screening_id/checkout", () => {
       charge: 1500,
     };
 
-    const { body: { session_url }} = await request(app)
+    const {
+      body: { session_url },
+    } = await request(app)
       .post("/api/screenings/2/checkout")
       .send(body)
       .set("Origin", "www.testdomain.com")
-      .expect(201)
+      .expect(201);
 
-    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/)
+    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
   });
   it("should redirecto to a checkout screen when paying what you want", async () => {
     const body = {
       charge: 800,
     };
 
-    const { body: { session_url }} = await request(app)
+    const {
+      body: { session_url },
+    } = await request(app)
       .post("/api/screenings/1/checkout")
       .send(body)
       .set("Origin", "www.testdomain.com")
-      .expect(201)
+      .expect(201);
 
-    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/)
-      
+    expect(session_url).toMatch(/https:\/\/checkout\.stripe\.com\/c\/pay\/.*/);
   });
   it("should respond with 403 if send from an invalid origin", async () => {
     const {
