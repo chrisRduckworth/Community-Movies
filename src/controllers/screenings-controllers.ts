@@ -95,7 +95,7 @@ const getBooking: RequestHandler = async (req, res, next) => {
   try {
     const { screening_id, booking_id } = req.params
     const booking = await fetchBooking(screening_id, booking_id)
-    res.status(200).send(booking)
+    res.status(200).send({ booking })
   } catch (e) {
     next(e)
   }

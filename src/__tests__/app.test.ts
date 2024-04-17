@@ -652,12 +652,12 @@ describe("POST /api/screenings", () => {
 
 describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
   it("should return the booking", async () => {
-    const { body } = await request(app)
-      .get("/api/screenings/12/bookings/1")
-      .expect(200);
+    const {
+      body: { booking },
+    } = await request(app).get("/api/screenings/12/bookings/1").expect(200);
 
-    expect(body).toEqual({
-      booking_id: 1,
+    expect(booking).toEqual({
+      booking_id: "1",
       email: "john.doe@example.com",
       charge: 1800,
       screening: {

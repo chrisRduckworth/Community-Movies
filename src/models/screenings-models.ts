@@ -319,7 +319,7 @@ exports.fetchBooking = async (screening_id: any, booking_id: any) => {
     year,
   } = rows[0];
   return {
-    booking_id: parseInt(id),
+    booking_id: id,
     email,
     charge,
     screening: {
