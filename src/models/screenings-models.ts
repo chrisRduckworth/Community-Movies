@@ -234,12 +234,19 @@ exports.createScreening = async (
     throw e;
   }
   data = data.data;
-
+  
   const title = data.original_title;
   const year = data.release_date.slice(0, 4);
   const description = data.overview;
-  const poster_url = `https://image.tmdb.org/t/p/original${images.data.posters[0].file_path}`;
-  const backdrop_url = `https://image.tmdb.org/t/p/original${images.data.backdrops[0].file_path}`;
+
+  const poster_url =
+    images.data.posters.length > 0
+      ? `https://image.tmdb.org/t/p/original${images.data.posters[0].file_path}`
+      : "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-38-picture-grey-c2ebdbb057f2a7614185931650f8cee23fa137b93812ccb132b9df511df1cfac.svg";
+  const backdrop_url =
+    images.data.backdrops.length > 0
+      ? `https://image.tmdb.org/t/p/original${images.data.backdrops[0].file_path}`
+      : "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-38-picture-grey-c2ebdbb057f2a7614185931650f8cee23fa137b93812ccb132b9df511df1cfac.svg";
 
   const { rows } = await db.query(
     `

@@ -470,6 +470,30 @@ describe("POST /api/screenings", () => {
 
     expect(parseInt(newCount)).toBe(parseInt(count) + 1);
   });
+  it('should substitute img urls with defaults if they are not found in tmdb', async () => {
+    const screening = {
+      tmdb_id: 379979,
+      location: "123 Waterloo Road, London, A1 9PB",
+      date: "2024-05-07 17:00:00+01",
+      cost: 0,
+      is_pay_what_you_want: true,
+    };
+
+    const {
+      body: {
+        screening: {
+          film: { poster_url, backdrop_url },
+        },
+      },
+    } = await request(app)
+      .post("/api/screenings")
+      .send(screening)
+      .set("Origin", "www.testdomain.com")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(201);
+    expect(poster_url).toBe("https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-38-picture-grey-c2ebdbb057f2a7614185931650f8cee23fa137b93812ccb132b9df511df1cfac.svg")
+    expect(backdrop_url).toBe("https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-38-picture-grey-c2ebdbb057f2a7614185931650f8cee23fa137b93812ccb132b9df511df1cfac.svg")
+  });
   it("should respond with 403 if not coming from a valid url", async () => {
     const screening = {
       tmdb_id: 489,
