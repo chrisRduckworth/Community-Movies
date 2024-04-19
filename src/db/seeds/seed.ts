@@ -60,13 +60,21 @@ const seed = async ({
   );
   await db.query(insertScreeningsStr);
 
+  const { rows } = await db.query(`SELECT screening_id FROM screenings;`);
+  const screening_ids = rows.map((s: any) => s.screening_id);
+
   // insert bookings
   const insertBookingsStr = format(
     `INSERT INTO bookings 
       (booking_id, screening_id, email, charge)
     VALUES %L`,
     bookingData.map((booking) => {
-      return [booking.booking_id, booking.screening_id, booking.email, booking.charge];
+      return [
+        booking.booking_id,
+        screening_ids[Math.floor(Math.random() * screening_ids.length)],
+        booking.email,
+        booking.charge,
+      ];
     })
   );
   await db.query(insertBookingsStr);
