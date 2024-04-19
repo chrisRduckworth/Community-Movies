@@ -406,16 +406,72 @@ exports.handlers = [
   }),
   http.get("https://api.themoviedb.org/3/movie/10000000", () => {
     return HttpResponse.json({
-      "success": false,
-      "status_code": 34,
-      "status_message": "The resource you requested could not be found."
-    })
+      success: false,
+      status_code: 34,
+      status_message: "The resource you requested could not be found.",
+    });
   }),
   http.get("https://api.themoviedb.org/3/movie/bananas", () => {
     return HttpResponse.json({
-      "success": false,
-      "status_code": 6,
-      "status_message": "Invalid id: The pre-requisite id is invalid or not found."
-    })
-  })
+      success: false,
+      status_code: 6,
+      status_message:
+        "Invalid id: The pre-requisite id is invalid or not found.",
+    });
+  }),
+  http.get("https://api.themoviedb.org/3/movie/379979", () => {
+    return HttpResponse.json({
+      adult: false,
+      backdrop_path: null,
+      belongs_to_collection: null,
+      budget: 0,
+      genres: [
+        {
+          id: 53,
+          name: "Thriller",
+        },
+      ],
+      homepage: "",
+      id: 379979,
+      imdb_id: "tt1077070",
+      origin_country: ["ES"],
+      original_language: "es",
+      original_title: "ASD - Alma sin dueño (Sin alma)",
+      overview: "",
+      popularity: 5.307,
+      poster_path: null,
+      production_companies: [
+        {
+          id: 65067,
+          logo_path: null,
+          name: "Alma Ata Films",
+          origin_country: "",
+        },
+      ],
+      production_countries: [
+        {
+          iso_3166_1: "ES",
+          name: "Spain",
+        },
+      ],
+      release_date: "2010-01-29",
+      revenue: 0,
+      runtime: 0,
+      spoken_languages: [],
+      status: "Released",
+      tagline: "",
+      title: "ASD - Alma sin dueño (Sin alma)",
+      video: false,
+      vote_average: 6,
+      vote_count: 178,
+    });
+  }),
+  http.get("https://api.themoviedb.org/3/movie/379979/images", () => {
+    return HttpResponse.json({
+      backdrops: [],
+      id: 379979,
+      logos: [],
+      posters: [],
+    });
+  }),
 ];
