@@ -659,7 +659,10 @@ describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
   it("should return the booking", async () => {
     const {
       body: { booking },
-    } = await request(app).get("/api/screenings/12/bookings/1").expect(200);
+    } = await request(app)
+      .get("/api/screenings/12/bookings/1")
+      .set("Origin", "www.testdomain.com")
+      .expect(200);
 
     expect(booking).toEqual({
       booking_id: "1",
@@ -677,14 +680,20 @@ describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
   it("should return 404 if screening is not found", async () => {
     const {
       body: { msg },
-    } = await request(app).get("/api/screenings/10000/bookings/1").expect(404);
+    } = await request(app)
+      .get("/api/screenings/10000/bookings/1")
+      .set("Origin", "www.testdomain.com")
+      .expect(404);
 
     expect(msg).toBe("No booking found");
   });
   it("should return 404 if booking is not found", async () => {
     const {
       body: { msg },
-    } = await request(app).get("/api/screenings/1/bookings/10000").expect(404);
+    } = await request(app)
+      .get("/api/screenings/1/bookings/10000")
+      .set("Origin", "www.testdomain.com")
+      .expect(404);
 
     expect(msg).toBe("No booking found");
   });
@@ -693,6 +702,7 @@ describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
       body: { msg },
     } = await request(app)
       .get("/api/screenings/bananas/bookings/2")
+      .set("Origin", "www.testdomain.com")
       .expect(400);
 
     expect(msg).toBe("Bad request");
@@ -700,7 +710,16 @@ describe("GET /api/screenings/:screening_id/bookings/:booking_id", () => {
   it("should return 404 if screening_id does not match id from booking", async () => {
     const {
       body: { msg },
-    } = await request(app).get("/api/screenings/1/bookings/1").expect(404);
+    } = await request(app)
+      .get("/api/screenings/1/bookings/1")
+      .set("Origin", "www.testdomain.com")
+      .expect(404);
     expect(msg).toBe("No booking found");
+  });
+  it("should respond with 403 if not coming from a valid url", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/screenings/12/bookings/1").expect(403);
+    expect(msg).toBe("CORS authentication failed");
   });
 });
