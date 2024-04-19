@@ -32,14 +32,14 @@ app.post(
   postBooking
 );
 
-app.get("/api/screenings/:screening_id/bookings/:booking_id", getBooking)
-
 app.use(express.json());
 
 // these endpoints must come from an allowed origin
 app.use(cors(corsOptions));
 
 app.post("/api/screenings/:screening_id/checkout", postCheckout);
+
+app.get("/api/screenings/:screening_id/bookings/:booking_id", getBooking)
 
 app.post("/api/staff/login", postLogin);
 
